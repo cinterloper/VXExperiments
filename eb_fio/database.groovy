@@ -31,47 +31,32 @@ def boolean writeJson(name,Buffer data,cb){
 }
 dataReqChan = eb.consumer("dataRequest");
 dataReqChan.handler( { message  ->
-    def resp =[:]
-    def requests = message.body()["t"]
 
-    requests.each({reqType ->
-        log.info("db.groovy:  processing data req for ${reqType}")
+    def request = message.body()["t"]
+    log.info("db.groovy:  processing data req for ${request}")
 
-        readJson("${reqType}.json",  {data ->
-            resp[reqType]=data
-            log.info("db.groovy: resp from readJson ${reqType} : ${resp}")
-            if(resp.size() == requests.size()) // all files requeted have been read, resp obj is populated
-            {
-                message.reply(new JsonObject(resp));
-                resp = [:]
-            }
+    readJson("${request}.json",  {data ->
+                log.info("db.groovy: resp from readJson ${request} : ${data }")
+                message.reply(data);
         })
-
-    })
 })
 
 dataUpdChan = eb.consumer("dataUpdate");
 dataUpdChan.handler( { message  ->
-    def resp =[:]
-    def requests = message.body()["t"]
-    log.info("db.groovy: got data update request ${message.body()}")
-    requests.each({reqType ->
-        log.info("db: processing data update req for ${reqType}")
-        def data=message.body()["d"][reqType]
-        writeJson("${reqType}.json", Buffer.buffer(new JsonObject(data).toString()) ,{ ar ->
-            resp[reqType]=ar
-            if(ar)
-                log.info("db.groovy: wrote  "+reqType)
-	    else
-		log.info("db.groovy: error writeing " + reqType)
-            if(resp.size() == requests.size()) // all files requeted have been written, resp obj is populated
-            {
-                message.reply(new JsonObject(resp));
-                resp = [:]
-            }
-        })
+    def request = message.body()["t"]
+    def data = message.body()["d"]
 
-    })
+    log.info("db.groovy: got data update request ${message.body()}")
+
+    writeJson("${request}.json", Buffer.buffer(new JsonObject(data).toString()) ,{ ar ->
+            if(ar)
+                log.info("db.groovy: wrote  "+request)
+	    else
+		log.info("db.groovy: error writeing " + request)
+
+            message.reply(ar);
+
+        })
 })
 
 
