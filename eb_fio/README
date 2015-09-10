@@ -1,6 +1,4 @@
 
-lMessage reply handler timed out as no reply was received - it will be removed
- $Unhandled exception
 java.lang.IllegalStateException: failed to create a child event loop
         at io.netty.util.concurrent.MultithreadEventExecutorGroup.<init>(MultithreadEventExecutorGroup.java:68)
         at io.netty.channel.MultithreadEventLoopGroup.<init>(MultithreadEventLoopGroup.java:49)
@@ -12,8 +10,8 @@ java.lang.IllegalStateException: failed to create a child event loop
         at io.vertx.core.impl.VertxFactoryImpl.vertx(VertxFactoryImpl.java:34)
         at io.vertx.core.Vertx.vertx(Vertx.java:78)
         at io.vertx.groovy.core.Vertx.vertx(Vertx.groovy:85)
-        at io.vertx.groovy.core.Vertx$vertx$1.call(Unknown Source)
-        at database.readJson(database.groovy:19)
+        at io.vertx.groovy.core.Vertx$vertx$0.call(Unknown Source)
+        at database.readJson(database.groovy:13)
         at sun.reflect.GeneratedMethodAccessor4.invoke(Unknown Source)
         at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
         at java.lang.reflect.Method.invoke(Method.java:497)
@@ -23,7 +21,7 @@ java.lang.IllegalStateException: failed to create a child event loop
         at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1015)
         at org.codehaus.groovy.runtime.callsite.PogoMetaClassSite.callCurrent(PogoMetaClassSite.java:66)
         at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:145)
-        at database$_run_closure1_closure5.doCall(database.groovy:49)
+        at database$_run_closure1_closure5.doCall(database.groovy:40)
         at sun.reflect.GeneratedMethodAccessor3.invoke(Unknown Source)
         at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
         at java.lang.reflect.Method.invoke(Method.java:497)
@@ -39,7 +37,7 @@ java.lang.IllegalStateException: failed to create a child event loop
         at org.codehaus.groovy.runtime.callsite.PojoMetaMethodSite$PojoMetaMethodSiteNoUnwrapNoCoerce.invoke(PojoMetaMethodSite.java:271)
         at org.codehaus.groovy.runtime.callsite.PojoMetaMethodSite.call(PojoMetaMethodSite.java:53)
         at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:116)
-        at database$_run_closure1.doCall(database.groovy:47)
+        at database$_run_closure1.doCall(database.groovy:37)
         at sun.reflect.GeneratedMethodAccessor2.invoke(Unknown Source)
         at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
         at java.lang.reflect.Method.invoke(Method.java:497)
@@ -56,9 +54,9 @@ java.lang.IllegalStateException: failed to create a child event loop
         at io.vertx.core.eventbus.impl.EventBusImpl$HandlerRegistration.handle(EventBusImpl.java:1108)
         at io.vertx.core.eventbus.impl.EventBusImpl.lambda$doReceive$189(EventBusImpl.java:755)
         at io.vertx.core.impl.ContextImpl.lambda$wrapTask$15(ContextImpl.java:314)
-        at io.vertx.core.impl.OrderedExecutorFactory$OrderedExecutor.lambda$new$161(OrderedExecutorFactory.java:91)
-        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
-        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+        at io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:357)
+        at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:357)
+        at io.netty.util.concurrent.SingleThreadEventExecutor$2.run(SingleThreadEventExecutor.java:111)
         at java.lang.Thread.run(Thread.java:745)
 Caused by: io.netty.channel.ChannelException: failed to open a new selector
         at io.netty.channel.nio.NioEventLoop.openSelector(NioEventLoop.java:128)
