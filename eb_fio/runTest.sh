@@ -1,6 +1,6 @@
 #!/bin/bash
 
-vertx run startup.js &
+vertx run database.groovy &
 VPID=$! 
 echo vx running as $VPID
 bash pollfh.sh $VPID 
