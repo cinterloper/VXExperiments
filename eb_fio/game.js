@@ -30,7 +30,7 @@ function updateData(types, data, cb) {
         "d": data
     }, function(ar, ar_err) {
         if (ar_err == null) {
-            logger.info("game.js: Received updateData reply: " + ar.body());
+            logger.info("game.js: Received updateData reply: " + JSON.stringify(ar.body()));
             cb(ar.body())
         }
     });
