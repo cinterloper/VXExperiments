@@ -1,4 +1,3 @@
-
 import io.vertx.core.buffer.Buffer
 import io.vertx.core.json.JsonObject
 import io.vertx.core.logging.LoggerFactory
@@ -13,43 +12,40 @@ class g{ /*globals*/
     public static d = [:] /*database*/
 }
 g.u.log = LoggerFactory.getLogger("database.groovy");
-g.u.cfg = ctx.config()
 
 g.u.log.info("|database.groovy starting|\n")
 
 def boolean readJson(name, cb){
     Vertx.vertx().fileSystem().readFile( 'json' + "/${name}", { result ->
         if (result.succeeded()) {
-            cb(  new JsonObject(result.result().toString("ISO-8859-1")))
-
+            cb(  new JsonObject(result.result().toString("ISO-8859-1")) ) //respond with the data from file
         } else {
-            g.u.log.error("could not read json :${name}: " + result.cause())
+            g.u.log.error("db.groovy: could not read json :${name}: " + result.cause())
         }
     })
 }
 def boolean writeJson(name,Buffer data,cb){
     Vertx.vertx().fileSystem().writeFile('json' + "/${name}", data, { result ->
         if (result.succeeded()) {
-            g.u.log.info("wrote json for ${name} : ${data.toString("ISO-8859-1")}")
+            g.u.log.info("db.groovy: wrote json for ${name} : ${data.toString("ISO-8859-1")}")
             cb(true)
         } else {
-            g.u.log.error("could not write json :${name}: " + result.cause())
+            g.u.log.error("db.groovy: could not write json :${name}: " + result.cause())
             cb(false)
         }
     })
 }
-
-
 dataReqChan = eb.consumer("dataRequest");
 dataReqChan.handler( { message  ->
     resp =[:]
-    g.u.log.info("got data request ${message.body()}")
-    message.body()["t"].each({dtype ->
-        g.u.log.info("db: processing data req for ${dtype}")
-        readJson("${dtype}.json",{data ->
-            resp[dtype]=data
-            g.u.log.info("resp s : ${resp}")
-            if(resp.size() == message.body()['t'].size())
+    requests = message.body()["t"]
+    log = g.u.log
+    requests.each({reqType ->
+        log.info("db.groovy:  processing data req for ${reqType}")
+        readJson("${reqType}.json",  {data ->
+            resp[reqType]=data
+            log.info("db.groovy: resp from readJson ${reqType} : ${resp}")
+            if(resp.size() == requests.size())
             {
                 message.reply(new JsonObject(resp));
                 resp = [:]
@@ -61,13 +57,16 @@ dataReqChan.handler( { message  ->
 
 dataUpdChan = eb.consumer("dataUpdate");
 dataUpdChan.handler( { message  ->
-    def resp =[:]
-    g.u.log.info("got data update request ${message.body()}")
-    message.body()["t"].each({dtype ->
-        g.u.log.info("db: processing data update req for ${dtype}")
-        writeJson("${dtype}.json",Buffer.buffer(new JsonObject(message.body()["d"][dtype]).toString()) as Buffer,{ ar ->
+    resp =[:]
+    requests = message.body()["t"]
+    log = g.u.log
+    log.info("db.groovy: got data update request ${message.body()}")
+    requests.each({reqType ->
+        log.info("db: processing data update req for ${reqType}")
+        data=message.body()["d"][reqType]
+        writeJson("${reqType}.json", Buffer.buffer(new JsonObject(data).toString()) ,{ ar ->
             if(ar)
-                g.u.log.info("wrote  "+dtype)
+                log.info("db.groovy: wrote  "+reqType)
              message.reply(ar);
         })
 
