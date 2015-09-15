@@ -10,7 +10,7 @@ log = LoggerFactory.getLogger("database.groovy");
 log.info("|database.groovy starting|\n")
 
 def boolean readJson(name, cb){
-    Vertx.vertx().fileSystem().readFile( 'json' + "/${name}", { result ->
+    vertx.fileSystem().readFile( 'json' + "/${name}", { result ->
         if (result.succeeded()) {
             cb(  new JsonObject(result.result().toString("ISO-8859-1")) ) //respond with the data from file
         } else {
